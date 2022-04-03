@@ -66,13 +66,49 @@ const calculateEntry = ({ Adult = 0, Senior = 0, Child = 0 } = 0) => {
   };
 
   const price = (prices.Adult * validation.Adult)
-  + (prices.Child * validation.Child) + (prices.Senior * validation.Senior);
+    + (prices.Child * validation.Child) + (prices.Senior * validation.Senior);
   return price;
 };
 
-function getAnimalMap(options) {
-  // seu código aqui
+function includeNamesMap() {
+  const { species } = data;
+  const localization = {
+    NE: [],
+    NW: [],
+    SE: [],
+    SW: [],
+  };
+  species.forEach((spe) => {
+    const specieID = {};
+    specieID[spe.name] = [];
+    spe.residents.forEach((nameSpe) => {
+      specieID[spe.name].push(nameSpe.name);
+    });
+    specieID[spe.name].sort();
+    localization[spe.location].push(specieID);
+  });
+  return localization;
 }
+
+function getAnimalMap(options) {
+  const { species } = data;
+  if (!options) {
+    const localization = {
+      NE: [],
+      NW: [],
+      SE: [],
+      SW: [],
+    };
+    species.forEach((spe) => {
+      localization[spe.location].push(spe.name);
+    });
+    return localization;
+  }
+  if (options.includeNames) {
+    return includeNamesMap();
+  }
+}
+
 // Josué lobo ajudou >:D
 const convertorAmPm = (hour) => {
   if (hour > 12) return `${(hour - 12)}pm`;
